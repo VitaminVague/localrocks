@@ -1,0 +1,181 @@
+name: CI
+
+on:
+  pull_request:
+    paths-ignore: ["**.md", .vscode/**]
+  push:
+    branches: "**" # all branches, no tags
+    paths-ignore: ["**.md", .vscode/**]
+
+permissions:
+  contents: read
+  statuses: write # coverallsapp/github-action
+  pull-requests: write # coverallsapp/github-action
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rockspec:
+    name: Resolve development rockspec
+    runs-on: ubuntu-latest
+
+    outputs:
+      path: ${{ steps.find-rockspec.outputs.path }}
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: leafo/gh-actions-lua@v13
+      - uses: leafo/gh-actions-luarocks@v6
+
+      - id: find-rockspec
+        uses: ./.github/actions/find-rockspec
+        with:
+          version: scm
+
+      - name: Check rockspec syntax
+        env:
+          ROCKSPEC: ${{ steps.find-rockspec.outputs.path }}
+        run: luarocks lint "$ROCKSPEC"
+
+  test:
+    name: >-
+      ${{
+        format(
+          'Test ({0} on {1})',
+          case(
+            matrix.lua == 'luajit',
+            'LuaJIT',
+            format('Lua {0}', matrix.lua)
+          ),
+          matrix.os
+        )
+      }}
+    needs: rockspec
+    runs-on: ${{ matrix.os }}
+
+    env:
+      ROCKSPEC: ${{ needs.rockspec.outputs.path }}
+
+    # NOTE: No Windows target.
+    #
+    # `leafo/gh-actions-luarocks` does not support building on Windows.
+    #
+    # The fork `luarocks/gh-actions-luarocks` supports Windows with
+    # pre-compiled binaries that use different paths and break the cache
+    # strategy in this workflow.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        lua: ["5.1", "5.2", "5.3", "5.4", "5.5", luajit]
+        include:
+          - os: macos-latest
+            lua: "5.5"
+          #- os: windows-latest
+          #  lua: "5.5"
+
+    steps:
+      - uses: actions/checkout@v6
+
+      # Prerequisite action for `leafo/gh-actions-lua` on Windows
+      # Does nothing on Linux and macOS
+      #- uses: ilammy/msvc-dev-cmd@v1
+
+      - uses: leafo/gh-actions-lua@v13
+        with:
+          luaVersion: ${{ matrix.lua }}
+
+      # Cache the entire LuaRocks installation.
+      #
+      # `leafo/gh-actions-luarocks` installs LuaRocks into `.luarocks` and
+      # prefixes all paths with that directory.
+      #
+      # If cache is hit, `leafo/gh-actions-luarocks` will reinstall LuaRocks,
+      # but installed rocks will be preserved.
+      #
+      # NOTE: The `luarocks.lock` lockfile is not used for the cache key.
+      #
+      # As of Luarocks 3.8.0, the lockfile created by `luarocks make --pin` has
+      # two major issues:
+      #
+      # 1. It does not pin test dependencies, so it does not represent the
+      #    dependency graph used in this workflow.
+      #
+      # 2. It attempts to enforce the exact Lua version when the lockfile was
+      #    generated, which always fails in this workflow.
+      #
+      # Instead the rockspec is used, which more accurately reflects the
+      # dependency graph of this workflow.
+      - name: Cache LuaRocks rocks
+        uses: actions/cache@v5
+        with:
+          key: >-
+            ${{
+              format(
+                '{0}-luarocks-{1}-{2}',
+                runner.os,
+                matrix.lua,
+                hashFiles(needs.rockspec.outputs.path)
+              )
+            }}
+          path: .luarocks
+          restore-keys: |
+            ${{ runner.os }}-luarocks-${{ matrix.lua }}-
+
+      - uses: leafo/gh-actions-luarocks@v6
+
+      - name: Install dependencies
+        run: |
+          luarocks make --no-install "$ROCKSPEC"
+          luarocks test --prepare "$ROCKSPEC"
+
+      - name: Run tests
+        run: luarocks test "$ROCKSPEC" -- -c -o TAP
+
+      - name: Report coverage
+        if: github.repository == 'VitaminVague/localrocks'
+        run: luacov
+
+      - name: Coveralls
+        if: github.repository == 'VitaminVague/localrocks'
+        uses: coverallsapp/github-action@v2
+        with:
+          file: luacov.report.out
+          format: lcov
+          flag-name: ${{ join(matrix.*, '-') }}
+          parallel: true
+
+  coveralls:
+    name: Coveralls finished
+    if: github.repository == 'VitaminVague/localrocks'
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: coverallsapp/github-action@v2
+        with:
+          parallel-finished: true
+
+  upload:
+    name: Upload to LuaRocks
+    if: >-
+      github.repository == 'VitaminVague/localrocks' &&
+      github.ref == 'refs/heads/master'
+    needs: [rockspec, test]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: leafo/gh-actions-lua@v13
+      - uses: leafo/gh-actions-luarocks@v6
+
+      - name: Upload to LuaRocks
+        env:
+          LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
+          ROCKSPEC: ${{ needs.rockspec.outputs.path }}
+        run: |
+          luarocks upload \
+            --temp-key "${LUAROCKS_API_KEY:?}" \
+            --force \
+            "$ROCKSPEC"

@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    ".busted": "lua",
+    ".luacheckrc": "lua",
+    ".luacov": "lua",
+    "*.rockspec": "lua"
+  }
+}

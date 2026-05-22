@@ -1,0 +1,100 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Release",
+      "type": "shell",
+      "command": "scripts/release.sh",
+      "args": ["${input:version}"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint: Lua",
+      "type": "shell",
+      "command": "luacheck .",
+      "group": "test"
+    },
+    {
+      "label": "Lint: Rockspec",
+      "type": "shell",
+      "command": "find . -type f -name \"*.rockspec\" -exec luarocks lint {} \\;",
+      "group": "test"
+    },
+    {
+      "label": "Lint: Shell",
+      "type": "shell",
+      "command": "find . -type f -name \"*.sh\" -exec shellcheck -f gcc {} +",
+      "problemMatcher": "$gcc",
+      "group": "test"
+    },
+    {
+      "label": "Lint",
+      "dependsOn": ["Lint: Lua", "Lint: Rockspec", "Lint: Shell"],
+      "group": "test"
+    },
+    {
+      "label": "Test",
+      "type": "shell",
+      "command": "luarocks test",
+      "dependsOn": ["Lint"],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Coverage: Test",
+      "type": "shell",
+      "command": "luarocks test -- -c",
+      "dependsOn": ["Lint"],
+      "group": "test"
+    },
+    {
+      "label": "Coverage: Report",
+      "type": "shell",
+      "command": "luacov",
+      "group": "test"
+    },
+    {
+      "label": "Coverage: HTML",
+      "type": "shell",
+      "command": "genhtml -o coverage --dark-mode luacov.report.out",
+      "group": "test"
+    },
+    {
+      "label": "Coverage: Open",
+      "type": "shell",
+      "linux": {
+        "command": "xdg-open coverage/index.html"
+      },
+      "osx": {
+        "command": "open coverage/index.html"
+      },
+      "windows": {
+        "command": "start /c start \"\" coverage/index.html"
+      },
+      "presentation": {
+        "close": true
+      },
+      "group": "test"
+    },
+    {
+      "label": "Coverage",
+      "dependsOn": [
+        "Coverage: Test",
+        "Coverage: Report",
+        "Coverage: HTML",
+        "Coverage: Open"
+      ],
+      "dependsOrder": "sequence",
+      "group": "test"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "version",
+      "type": "promptString",
+      "description": "Enter release version (e.g. 1.2.3, 1.2.3-rc.1)"
+    }
+  ]
+}

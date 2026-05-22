@@ -1,0 +1,6 @@
+return {
+    include = {
+        "src",
+    },
+    reporter = "lcov",
+}

@@ -1,0 +1,21 @@
+{
+  "runtime": {
+    "version": "Lua 5.1"
+  },
+  "diagnostics": {
+    "ignoredFiles": "Disable"
+  },
+  "workspace": {
+    "ignoreDir": [
+      ".busted",
+      ".luacheckrc",
+      ".luacov",
+      "*.rockspec"
+    ],
+    "library": [
+      "${addons}/busted/module/library",
+      "${3rd}/luassert/library"
+    ],
+    "checkThirdParty": false
+  }
+}

@@ -1,0 +1,77 @@
+name: Find LuaRocks rockspec
+author: Vitamin Vague
+description: >
+  Finds a LuaRocks rockspec file based on the workflow Git tag or optional
+  inputs.
+
+  If the tag includes a "+revision" suffix (build metadata), that exact
+  revision is used.
+  If the tag does not include a revision, the highest available revision for
+  that version is selected.
+
+  Providing the `version` input overrides tag parsing.
+  If a `revision` input is also provided, that exact revision is used;
+  otherwise, it selects the highest available revision for the given version.
+
+  Hyphens in version strings are normalized to underscores (e.g. "1.2.3-rc.1"
+  becomes "1.2.3_rc.1").
+
+  Supported tag formats:
+    1
+    1.2
+    1.2.3
+    v1.2.3-rc.1+2
+
+branding:
+  icon: moon
+  color: blue
+
+inputs:
+  package:
+    description: >
+      Package name override.
+      Defaults to the repository name.
+    required: false
+
+  version:
+    description: >
+      Version override (e.g. "1.2.3", "dev", "scm").
+      If not set, version is derived from Git tag.
+    required: false
+
+  revision:
+    description: >
+      Revision override (non-negative integer).
+      Only used if the `version` input is also provided.
+      If set, only a rockspec with this exact revision is accepted.
+    required: false
+
+outputs:
+  package:
+    description: Resolved package name
+    value: ${{ steps.find.outputs.rockspec_package }}
+
+  version:
+    description: Resolved (normalized) version string
+    value: ${{ steps.find.outputs.rockspec_version }}
+
+  revision:
+    description: Resolved revision number
+    value: ${{ steps.find.outputs.rockspec_revision }}
+
+  path:
+    description: Relative path to the found .rockspec file
+    value: ${{ steps.find.outputs.rockspec_path }}
+
+runs:
+  using: composite
+
+  steps:
+    - id: find
+      shell: bash
+      env:
+        INPUT_PACKAGE: ${{ inputs.package }}
+        INPUT_VERSION: ${{ inputs.version }}
+        INPUT_REVISION: ${{ inputs.revision }}
+      run: |
+        "$GITHUB_ACTION_PATH/find.sh"

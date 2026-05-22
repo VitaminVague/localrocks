@@ -1,0 +1,28 @@
+* text=auto eol=lf
+
+# -----------------------------------------------------------------------------
+# GitHub Linguist overrides
+# -----------------------------------------------------------------------------
+
+.busted         linguist-language=Lua
+.luacheckrc     linguist-language=Lua
+.luacov         linguist-language=Lua
+*.rockspec      linguist-language=Lua
+
+# -----------------------------------------------------------------------------
+# Exclude from source archives
+# -----------------------------------------------------------------------------
+
+# Dev tools & editor configs
+.editorconfig   export-ignore
+.luacheckrc     export-ignore
+.luarc.json     export-ignore
+.vscode/        export-ignore
+
+# CI & release scripts
+.github/        export-ignore
+scripts/        export-ignore
+
+# Repository metadata
+.gitattributes  export-ignore
+.gitignore      export-ignore

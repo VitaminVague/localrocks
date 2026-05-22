@@ -1,0 +1,99 @@
+name: Release
+
+on:
+  push:
+    tags: v[0-9]+.[0-9]+.[0-9]+*
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Release
+    if: github.repository == 'VitaminVague/localrocks'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: leafo/gh-actions-lua@v13
+      - uses: leafo/gh-actions-luarocks@v6
+
+      - id: find-rockspec
+        uses: ./.github/actions/find-rockspec
+
+      - name: Check rockspec syntax
+        env:
+          ROCKSPEC: ${{ steps.find-rockspec.outputs.path }}
+        run: luarocks lint "$ROCKSPEC"
+
+      - id: pack-src-rock
+        name: Pack source rock
+        env:
+          PACKAGE: ${{ steps.find-rockspec.outputs.package }}
+          VERSION: ${{ steps.find-rockspec.outputs.version }}
+          REVISION: ${{ steps.find-rockspec.outputs.revision }}
+          ROCKSPEC: ${{ steps.find-rockspec.outputs.path }}
+        run: |
+          SRC_ROCK=./$PACKAGE-$VERSION-$REVISION.src.rock
+
+          luarocks pack "$ROCKSPEC"
+
+          [[ -f "$BIN_ROCK" ]] || {
+            printf '::error::%s\n' "Source rock was not created: $SRC_ROCK" >&2
+            exit 1
+          }
+
+          printf 'path=%s\n' "$SRC_ROCK" >>"$GITHUB_OUTPUT"
+
+      - id: pack-bin-rock
+        name: Pack binary rock
+        env:
+          PACKAGE: ${{ steps.find-rockspec.outputs.package }}
+          VERSION: ${{ steps.find-rockspec.outputs.version }}
+          REVISION: ${{ steps.find-rockspec.outputs.revision }}
+          ROCKSPEC: ${{ steps.find-rockspec.outputs.path }}
+        run: |
+          BIN_ROCK=./$PACKAGE-$VERSION-$REVISION.all.rock
+
+          luarocks make --pack-binary-rock "$ROCKSPEC"
+
+          [[ -f "$BIN_ROCK" ]] || {
+            printf '::error::%s\n' "Binary rock was not created: $BIN_ROCK" >&2
+            exit 1
+          }
+
+          printf 'path=%s\n' "$BIN_ROCK" >>"$GITHUB_OUTPUT"
+
+      - name: Test LuaRocks install
+        env:
+          BIN_ROCK: ${{ steps.pack-bin-rock.outputs.path }}
+        run: luarocks install "$BIN_ROCK"
+
+      - name: Upload to LuaRocks
+        env:
+          LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
+          ROCKSPEC: ${{ steps.find-rockspec.outputs.path }}
+        run: |
+          luarocks upload \
+            --temp-key "${LUAROCKS_API_KEY:?}" \
+            "$ROCKSPEC"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ROCKSPEC: ${{ steps.find-rockspec.outputs.path }}
+          SRC_ROCK: ${{ steps.pack-src-rock.outputs.path }}
+          BIN_ROCK: ${{ steps.pack-bin-rock.outputs.path }}
+        run: |
+          OPTS=(--generate-notes --title "${GITHUB_REF_NAME#v}")
+
+          # SemVer prerelease contains "-" before build metadata "+"
+          [[ "$GITHUB_REF_NAME" =~ ^[^+]+-.+$ ]] && OPTS+=(--prerelease)
+
+          gh release create \
+            "$GITHUB_REF_NAME" \
+            "${OPTS[@]}" \
+            "$ROCKSPEC" \
+            "$SRC_ROCK" \
+            "$BIN_ROCK"
