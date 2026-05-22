@@ -4,5 +4,6 @@
     ".luacheckrc": "lua",
     ".luacov": "lua",
     "*.rockspec": "lua"
-  }
+  },
+  "git.enableCommitSigning": true
 }
