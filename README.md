@@ -1,6 +1,5 @@
 # localrocks
 
-[![License][license-badge]][license-url]
 [![Latest release][release-badge]][release-url]
 [![LuaRocks status][luarocks-badge]][luarocks-url]
 [![Luacheck status][luacheck-badge]][luacheck-url]
@@ -137,17 +136,15 @@ Distributed under the [MIT license](LICENSE).
 
 - [Using LuaRocks to install packages in the current directory](https://leafo.net/guides/customizing-the-luarocks-tree.html)
 
-[license-badge]: https://img.shields.io/github/license/VitaminVague/localrocks
-[license-url]: LICENSE
 [release-badge]: https://img.shields.io/github/v/release/VitaminVague/localrocks
 [release-url]: https://github.com/VitaminVague/localrocks/releases/latest
 [luarocks-badge]: https://img.shields.io/luarocks/v/vitaminvague/localrocks
 [luarocks-url]: https://luarocks.org/modules/vitaminvague/localrocks
-[luacheck-badge]: https://img.shields.io/github/actions/workflow/status/VitaminVague/localrocks/luacheck.yml?branch=master
+[luacheck-badge]: https://img.shields.io/github/actions/workflow/status/VitaminVague/localrocks/luacheck.yml?branch=master&label=luacheck
 [luacheck-url]: https://github.com/VitaminVague/localrocks/actions/workflows/luacheck.yml
-[shellcheck-badge]: https://img.shields.io/github/actions/workflow/status/VitaminVague/localrocks/shellcheck.yml?branch=master
+[shellcheck-badge]: https://img.shields.io/github/actions/workflow/status/VitaminVague/localrocks/shellcheck.yml?branch=master&label=shellcheck
 [shellcheck-url]: https://github.com/VitaminVague/localrocks/actions/workflows/shellcheck.yml
-[ci-badge]: https://img.shields.io/github/actions/workflow/status/VitaminVague/localrocks/ci.yml?branch=master
+[ci-badge]: https://img.shields.io/github/actions/workflow/status/VitaminVague/localrocks/ci.yml?branch=master&label=ci
 [ci-url]: https://github.com/VitaminVague/localrocks/actions/workflows/ci.yml
 [coveralls-badge]: https://img.shields.io/coverallsCoverage/github/VitaminVague/localrocks?branch=master
 [coveralls-url]: https://coveralls.io/github/VitaminVague/localrocks?branch=master
