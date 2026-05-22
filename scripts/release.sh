@@ -8,7 +8,9 @@ set -euo pipefail
 readonly DEFAULT_BRANCH=master
 readonly PACKAGE=localrocks
 readonly RELEASE_DIR=rockspecs
-readonly SOURCE_DIR=rockspecs
+# As of 3.8.0, `luarocks new_version` insists the source rockspec lives in
+# project root.
+readonly SOURCE_DIR=.
 readonly SOURCE_VERSION=scm
 readonly SOURCE_REVISION=1
 
