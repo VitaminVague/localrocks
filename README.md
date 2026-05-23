@@ -88,7 +88,7 @@ lua -l localrocks myscript.lua
 
 ### Usage with Busted
 
-Create `myscript_spec.lua`:
+Create `spec/myscript_spec.lua`:
 
 ```lua
 describe("myscript.lua", function ()
