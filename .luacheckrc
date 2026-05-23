@@ -14,4 +14,4 @@ include_files = {
 files[".luacheckrc"].std = "+luacheckrc"
 files["*.rockspec"].std = "+rockspec"
 files["rockspecs/*.rockspec"].std = "+rockspec"
-files["spec/**/*.lua"].std = "+busted"
+files["src/*.lua"].std = "+busted"
