@@ -7,7 +7,7 @@ source = {
 }
 
 description = {
-    summary = 'Resolve modules from the local "./lua_modules" folder',
+    summary = 'Prepend project-local LuaRocks tree to module search paths',
     detailed = [[
 localrocks is a small helper that configures Lua to resolve modules from a
 project-local LuaRocks tree ("./lua_modules").
