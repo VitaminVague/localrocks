@@ -222,7 +222,7 @@ main() {
 
     # Print success
 
-    cat << END
+    cat <<END
 
 Release $tag prepared successfully!
 
