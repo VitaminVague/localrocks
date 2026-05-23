@@ -13,11 +13,11 @@ die() {
 }
 
 debug() {
-    printf '::debug::%s\n' "$*"
+    printf '::debug::%s\n' "$*" >&2
 }
 
 notice() {
-    printf '::notice::%s\n' "$*"
+    printf '::notice::%s\n' "$*" >&2
 }
 
 # Safe filename
