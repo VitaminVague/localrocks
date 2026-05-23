@@ -74,10 +74,12 @@ jobs:
         env:
           LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
           ROCKSPEC: ${{ steps.find-rockspec.outputs.path }}
+          SRC_ROCK: ${{ steps.pack-src-rock.outputs.path }}
         run: |
           luarocks upload \
             --temp-key "${LUAROCKS_API_KEY:?}" \
-            "$ROCKSPEC"
+            "$ROCKSPEC" \
+            "$SRC_ROCK"
 
       - name: Create GitHub release
         env:
