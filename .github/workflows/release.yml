@@ -39,7 +39,7 @@ jobs:
 
           luarocks pack "$ROCKSPEC"
 
-          [[ -f "$BIN_ROCK" ]] || {
+          [[ -f "$SRC_ROCK" ]] || {
             printf '::error::%s\n' "Source rock was not created: $SRC_ROCK" >&2
             exit 1
           }
