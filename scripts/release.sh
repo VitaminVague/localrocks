@@ -102,9 +102,20 @@ tag_name() {
     printf '%s\n' "$tag"
 }
 
-# Encode hyphens as underscores to avoid ambiguity with the revision separator
+# Normalize SemVer for use in a rockspec version.
+#
+# Rockspec version has the form:
+#   <version>-<revision>
+#
+# As of 3.8.0, `luarocks new_version` strips hyphens from the version component
+# to avoid ambiguity with the revision separator.
+# The final rockspec version must match the Lua pattern:
+#   [%w.]+-[%d]+
+#
+# Because hyphens cannot be preserved or encoded as underscores, the only
+# viable option is to remove them.
 to_rockspec_version() {
-    local version=${1//-/_} revision=$2
+    local version=${1//-/} revision=$2
     printf '%s-%s\n' "$version" "$revision"
 }
 

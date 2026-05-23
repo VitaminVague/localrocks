@@ -39,9 +39,20 @@ is_valid_revision() {
     [[ "$1" =~ ^(0|[1-9][0-9]*)$ ]]
 }
 
-# Encode hyphens as underscores to avoid ambiguity with the revision separator
+# Normalize SemVer for use in a rockspec version.
+#
+# Rockspec version has the form:
+#   <version>-<revision>
+#
+# As of 3.8.0, `luarocks new_version` strips hyphens from the version component
+# to avoid ambiguity with the revision separator.
+# The final rockspec version must match the Lua pattern:
+#   [%w.]+-[%d]+
+#
+# Because hyphens cannot be preserved or encoded as underscores, the only
+# viable option is to remove them.
 normalize_version() {
-    local original=$1 normalized=${1//-/_}
+    local original=$1 normalized=${1//-/}
     [[ "$normalized" == "$original" ]] ||
         notice "Normalized version '$original' to '$normalized'."
     printf '%s\n' "$normalized"

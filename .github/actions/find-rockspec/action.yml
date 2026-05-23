@@ -13,8 +13,8 @@ description: >
   If a `revision` input is also provided, that exact revision is used;
   otherwise, it selects the highest available revision for the given version.
 
-  Hyphens in version strings are normalized to underscores (e.g. "1.2.3-rc.1"
-  becomes "1.2.3_rc.1").
+  Hyphens in version strings are removed to produce a valid rockspec version
+  (e.g. "1.2.3-rc.1" becomes "1.2.3rc.1").
 
   Supported tag formats:
     1
