@@ -25,5 +25,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+
+      - name: Install StyLua
+        uses: JohnnyMorganz/stylua-action@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: "2.5.2"
+          args: false
+
+      - name: Run StyLua
+        run: |
+          find . -type f -name "*.lua" -exec \
+            stylua -c .busted .luacheckrc .luacov *.rockspec {} +
+
       - name: Run Luacheck
         uses: lunarmodules/luacheck@v1
