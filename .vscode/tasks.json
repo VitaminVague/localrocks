@@ -28,7 +28,7 @@
     {
       "label": "Lint: Rockspec",
       "type": "shell",
-      "command": "find . -type f -name \"*.rockspec\" -exec luarocks lint {} \\;",
+      "command": "find . -type f -name '*.rockspec' -exec luarocks lint {} \\;",
       "group": "test"
     },
     {
@@ -41,7 +41,7 @@
     {
       "label": "Lint: ShellCheck",
       "type": "shell",
-      "command": "find . -type f -name \"*.sh\" -exec shellcheck -f gcc {} +",
+      "command": "find . -type f -name '*.sh' -exec shellcheck -f gcc {} +",
       "problemMatcher": "$gcc",
       "group": "test"
     },
