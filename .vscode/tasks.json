@@ -9,6 +9,17 @@
       "problemMatcher": []
     },
     {
+      "label": "Format: Shell",
+      "type": "shell",
+      "command": "shfmt -l -w .",
+      "problemMatcher": []
+    },
+    {
+      "label": "Format",
+      "dependsOn": ["Format: Shell"],
+      "problemMatcher": []
+    },
+    {
       "label": "Lint: Lua",
       "type": "shell",
       "command": "luacheck .",
@@ -21,7 +32,14 @@
       "group": "test"
     },
     {
-      "label": "Lint: Shell",
+      "label": "Lint: shfmt",
+      "type": "shell",
+      "command": "shfmt -d .",
+      "problemMatcher": "$gcc",
+      "group": "test"
+    },
+    {
+      "label": "Lint: ShellCheck",
       "type": "shell",
       "command": "find . -type f -name \"*.sh\" -exec shellcheck -f gcc {} +",
       "problemMatcher": "$gcc",
@@ -29,7 +47,12 @@
     },
     {
       "label": "Lint",
-      "dependsOn": ["Lint: Lua", "Lint: Rockspec", "Lint: Shell"],
+      "dependsOn": [
+        "Lint: Lua",
+        "Lint: Rockspec",
+        "Lint: shfmt",
+        "Lint: ShellCheck"
+      ],
       "group": "test"
     },
     {
