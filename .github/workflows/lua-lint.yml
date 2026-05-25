@@ -15,6 +15,7 @@ on:
       - .luacov
       - "**.lua"
       - "**.rockspec"
+  workflow_dispatch:
 
 permissions:
   contents: read

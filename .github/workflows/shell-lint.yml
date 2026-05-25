@@ -3,6 +3,7 @@ name: Shell Lint
 on:
   pull_request: { paths: "**.sh" }
   push: { paths: "**.sh" }
+  workflow_dispatch:
 
 permissions:
   contents: read
