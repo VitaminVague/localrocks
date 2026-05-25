@@ -1,0 +1,7 @@
+syntax = "Lua51"
+column_width = 80
+indent_type = "Spaces"
+call_parentheses = "None"
+
+[sort_requires]
+enabled = true
