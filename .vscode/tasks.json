@@ -94,7 +94,7 @@
         "command": "open coverage/index.html"
       },
       "windows": {
-        "command": "start /c start \"\" coverage/index.html"
+        "command": "cmd /C start \"\" coverage/index.html"
       },
       "presentation": {
         "close": true
