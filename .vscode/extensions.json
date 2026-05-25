@@ -2,6 +2,7 @@
   "recommendations": [
     "EditorConfig.EditorConfig",
     "GitHub.vscode-github-actions",
+    "JohnnyMorganz.stylua",
     "mads-hartmann.bash-ide-vscode",
     "sumneko.lua"
   ]

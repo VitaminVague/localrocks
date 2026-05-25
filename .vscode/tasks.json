@@ -9,6 +9,12 @@
       "problemMatcher": []
     },
     {
+      "label": "Format: Lua",
+      "type": "shell",
+      "command": "find . -type f -name '*.lua' -exec stylua .busted .luacheckrc .luacov *.rockspec {} +",
+      "problemMatcher": []
+    },
+    {
       "label": "Format: Shell",
       "type": "shell",
       "command": "shfmt -l -w .",
@@ -16,11 +22,17 @@
     },
     {
       "label": "Format",
-      "dependsOn": ["Format: Shell"],
+      "dependsOn": ["Format: Lua", "Format: Shell"],
       "problemMatcher": []
     },
     {
-      "label": "Lint: Lua",
+      "label": "Lint: StyLua",
+      "type": "shell",
+      "command": "find . -type f -name '*.lua' -exec stylua -c .busted .luacheckrc .luacov *.rockspec {} +",
+      "group": "test"
+    },
+    {
+      "label": "Lint: Luacheck",
       "type": "shell",
       "command": "luacheck .",
       "group": "test"
@@ -48,7 +60,8 @@
     {
       "label": "Lint",
       "dependsOn": [
-        "Lint: Lua",
+        "Lint: StyLua",
+        "Lint: Luacheck",
         "Lint: Rockspec",
         "Lint: shfmt",
         "Lint: ShellCheck"

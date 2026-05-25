@@ -1,4 +1,7 @@
 {
+  "[lua]": {
+    "editor.defaultFormatter": "JohnnyMorganz.stylua"
+  },
   "files.associations": {
     ".busted": "lua",
     ".luacheckrc": "lua",
