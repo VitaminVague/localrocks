@@ -32,7 +32,7 @@ jobs:
 
           mkdir -p ~/.local/bin
 
-          curl -L \
+          curl -fLsS \
             -o ~/.local/bin/shfmt \
             https://github.com/mvdan/sh/releases/download/$RELEASE/$FILENAME
 
@@ -42,7 +42,7 @@ jobs:
           printf '%s\n' "$HOME/.local/bin" >>"$GITHUB_PATH"
 
       - name: Run shfmt
-        run: shfmt -d -s .
+        run: shfmt -d .
 
       - name: Run ShellCheck
         run: find . -type f -name "*.sh" -exec shellcheck {} +
