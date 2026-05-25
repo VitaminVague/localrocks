@@ -1,0 +1,28 @@
+name: Lua Lint
+
+on:
+  pull_request:
+    paths:
+      - .busted
+      - .luacheckrc
+      - .luacov
+      - "**.lua"
+      - "**.rockspec"
+  push:
+    paths:
+      - .busted
+      - .luacheckrc
+      - .luacov
+      - "**.lua"
+      - "**.rockspec"
+
+permissions:
+  contents: read
+
+jobs:
+  lua-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Run Luacheck
+        uses: lunarmodules/luacheck@v1
