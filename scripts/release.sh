@@ -34,13 +34,13 @@ die() {
 is_valid_version() {
     local regex
     regex='^(0|[1-9][0-9]*)(\.(0|[1-9][0-9]*)){2}' # version core
-    regex+='(-[0-9A-Za-z.-]+)?$' # pre-release
-    [[ "$1" =~ $regex ]]
+    regex+='(-[0-9A-Za-z.-]+)?$'                   # pre-release
+    [[ $1 =~ $regex ]]
 }
 
 # Positive integer
 is_valid_revision() {
-    [[ "$1" =~ ^[1-9][0-9]*$ ]]
+    [[ $1 =~ ^[1-9][0-9]*$ ]]
 }
 
 ensure_git_root() {
@@ -59,7 +59,7 @@ ensure_clean_working_tree() {
     local untracked
     untracked=$(git ls-files --others --exclude-standard)
 
-    [[ -z "$untracked" ]] || {
+    [[ -z $untracked ]] || {
         echo "$untracked" >&2
         die "Working tree has untracked files."
     }
@@ -69,7 +69,7 @@ ensure_default_branch() {
     local branch
     branch=$(git branch --show-current)
 
-    [[ "$branch" == "$DEFAULT_BRANCH" ]] ||
+    [[ $branch == "$DEFAULT_BRANCH" ]] ||
         die "Must be on '$DEFAULT_BRANCH' branch" \
             "(current: ${branch:-detached HEAD})."
 }
@@ -98,7 +98,7 @@ tag_exists() {
 tag_name() {
     local version=$1 revision=$2
     local tag="v$version"
-    (( revision > 1 )) && tag+="+$revision" # SemVer build metadata
+    ((revision > 1)) && tag+="+$revision" # SemVer build metadata
     printf '%s\n' "$tag"
 }
 
@@ -121,7 +121,7 @@ to_rockspec_version() {
 
 rockspec_path() {
     local dir=$1 package=$2 rockspec_version=$3
-    if [[ -z "$dir" || "$dir" == "." ]]; then
+    if [[ -z $dir || $dir == . ]]; then
         printf '%s-%s.rockspec\n' "$package" "$rockspec_version"
     else
         printf '%s/%s-%s.rockspec\n' "$dir" "$package" "$rockspec_version"
@@ -146,7 +146,7 @@ END
 main() {
     # Parse args
 
-    (( $# >= 1 && $# <= 2 )) || usage
+    (($# >= 1 && $# <= 2)) || usage
 
     local version=$1 revision=${2:-1}
 
@@ -175,7 +175,7 @@ main() {
     release_rockspec=$(rockspec_path \
         "$RELEASE_DIR" "$PACKAGE" "$rockspec_version")
 
-    [[ -e "$release_rockspec" ]] &&
+    [[ -e $release_rockspec ]] &&
         die "Rockspec already exists: $release_rockspec"
 
     confirm_release "$tag" "$release_rockspec" || {
@@ -197,14 +197,14 @@ main() {
 
     local flags=(--tag "$tag")
 
-    [[ -n "$RELEASE_DIR" ]] && {
+    [[ -n $RELEASE_DIR ]] && {
         mkdir -p "$RELEASE_DIR"
         flags+=(--dir "$RELEASE_DIR")
     }
 
     luarocks new_version "${flags[@]}" "$source_rockspec" "$rockspec_version"
 
-    [[ -f "$release_rockspec" ]] ||
+    [[ -f $release_rockspec ]] ||
         die "Rockspec was not created: $release_rockspec"
 
     # 2. Commit release
@@ -212,7 +212,7 @@ main() {
     echo "Committing changes"
 
     git add "$release_rockspec" &&
-    git commit -m "chore(release): New rockspec for $tag"
+        git commit -m "chore(release): New rockspec for $tag"
 
     # 3. Create tag
 

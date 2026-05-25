@@ -22,7 +22,7 @@ notice() {
 
 # Safe filename
 is_valid_input() {
-    [[ "$1" =~ ^[[:alnum:]._-]+$ ]]
+    [[ $1 =~ ^[[:alnum:]._-]+$ ]]
 }
 
 # SemVer without build metadata
@@ -31,12 +31,12 @@ is_valid_semver() {
     regex='^(0|[1-9][0-9]*)'          # major version
     regex+='(\.(0|[1-9][0-9]*)){0,2}' # optional major and minor versions
     regex+='(-[0-9A-Za-z.-]+)?$'      # optional pre-release version
-    [[ "$1" =~ $regex ]]
+    [[ $1 =~ $regex ]]
 }
 
 # Non-negative integer
 is_valid_revision() {
-    [[ "$1" =~ ^(0|[1-9][0-9]*)$ ]]
+    [[ $1 =~ ^(0|[1-9][0-9]*)$ ]]
 }
 
 # Normalize SemVer for use in a rockspec version.
@@ -53,7 +53,7 @@ is_valid_revision() {
 # viable option is to remove them.
 normalize_version() {
     local original=$1 normalized=${1//-/}
-    [[ "$normalized" == "$original" ]] ||
+    [[ $normalized == "$original" ]] ||
         notice "Normalized version '$original' to '$normalized'."
     printf '%s\n' "$normalized"
 }
@@ -63,7 +63,7 @@ main() {
 
     local package=${INPUT_PACKAGE:-}
 
-    if [[ -z "$package" ]]; then
+    if [[ -z $package ]]; then
         package=${GITHUB_REPOSITORY:?}
         package=${package#*/}
         notice "No package provided, using repository name: $package"
@@ -73,18 +73,18 @@ main() {
 
     local version revision
 
-    if [[ -n "${INPUT_VERSION:-}" ]]; then
+    if [[ -n ${INPUT_VERSION:-} ]]; then
         version=$INPUT_VERSION
         revision=${INPUT_REVISION:-}
     else
-        [[ "${GITHUB_REF_TYPE:?}" == tag ]] ||
+        [[ ${GITHUB_REF_TYPE:?} == tag ]] ||
             die "Workflow was not triggered from a tag."
 
         local tag=${GITHUB_REF_NAME:?}
         version=${tag#v}
         revision=""
 
-        [[ "$version" == *"+"* ]] && {
+        [[ $version == *+* ]] && {
             revision=${version#*+} # SemVer build metadata
             version=${version%+"$revision"}
         }
@@ -96,23 +96,23 @@ main() {
 
     is_valid_input "$version" || die "Invalid version: $version"
 
-    { [[ -z "$revision" ]] || is_valid_revision "$revision"; } ||
+    { [[ -z $revision ]] || is_valid_revision "$revision"; } ||
         die "Invalid revision: $revision"
 
     version=$(normalize_version "$version")
 
     # Find rockspec
 
-    [[ -n "$revision" ]] ||
+    [[ -n $revision ]] ||
         debug "No revision specified, selecting highest available."
 
     local dir candidate candidate_rev rockspec="" max_rev=-1
 
     for dir in "${SEARCH_DIRS[@]}"; do
-        [[ -d "$dir" ]] || continue
+        [[ -d $dir ]] || continue
 
         for candidate in "$dir/$package-$version-"*.rockspec; do
-            [[ -e "$candidate" ]] || continue
+            [[ -e $candidate ]] || continue
 
             candidate_rev=${candidate##*/}
             candidate_rev=${candidate_rev%.rockspec}
@@ -124,14 +124,14 @@ main() {
                 continue
             }
 
-            if [[ -n "$revision" ]]; then
+            if [[ -n $revision ]]; then
                 # Select exact revision
-                if (( candidate_rev == revision )); then
+                if ((candidate_rev == revision)); then
                     debug "Matched exact revision: $candidate_rev"
                     rockspec=$candidate
                     break 2 # break candidate and directory loops
                 fi
-            elif (( candidate_rev > max_rev )); then
+            elif ((candidate_rev > max_rev)); then
                 # Select highest revision
                 debug "Selecting revision: $candidate_rev"
                 rockspec=$candidate
@@ -140,10 +140,10 @@ main() {
         done
     done
 
-    [[ -n "$rockspec" ]] ||
+    [[ -n $rockspec ]] ||
         die "Rockspec not found: $package-$version-${revision:-*}.rockspec"
 
-    [[ -n "$revision" ]] || {
+    [[ -n $revision ]] || {
         revision=$max_rev
         notice "Selected highest available revision: $revision"
     }
