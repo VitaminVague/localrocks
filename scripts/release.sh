@@ -212,7 +212,7 @@ main() {
     echo "Committing changes"
 
     git add "$release_rockspec" &&
-    git commit -m "Release $tag"
+    git commit -m "chore(release): New rockspec for $tag"
 
     # 3. Create tag
 
