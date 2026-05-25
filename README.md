@@ -3,7 +3,7 @@
 [![Latest release][release-badge]][release-url]
 [![LuaRocks status][luarocks-badge]][luarocks-url]
 [![Luacheck status][luacheck-badge]][luacheck-url]
-[![ShellCheck status][shellcheck-badge]][shellcheck-url]
+[![Shell Lint status][shell-lint-badge]][shell-lint-url]
 [![CI status][ci-badge]][ci-url]
 [![Coveralls status][coveralls-badge]][coveralls-url]
 
@@ -142,8 +142,8 @@ Distributed under the [MIT license](LICENSE).
 [luarocks-url]: https://luarocks.org/modules/vitaminvague/localrocks
 [luacheck-badge]: https://img.shields.io/github/actions/workflow/status/VitaminVague/localrocks/luacheck.yml?branch=master&label=luacheck
 [luacheck-url]: https://github.com/VitaminVague/localrocks/actions/workflows/luacheck.yml
-[shellcheck-badge]: https://img.shields.io/github/actions/workflow/status/VitaminVague/localrocks/shellcheck.yml?branch=master&label=shellcheck
-[shellcheck-url]: https://github.com/VitaminVague/localrocks/actions/workflows/shellcheck.yml
+[shell-lint-badge]: https://img.shields.io/github/actions/workflow/status/VitaminVague/localrocks/shell-lint.yml?branch=master&label=shell+lint
+[shell-lint-url]: https://github.com/VitaminVague/localrocks/actions/workflows/shell-lint.yml
 [ci-badge]: https://img.shields.io/github/actions/workflow/status/VitaminVague/localrocks/ci.yml?branch=master&label=ci
 [ci-url]: https://github.com/VitaminVague/localrocks/actions/workflows/ci.yml
 [coveralls-badge]: https://img.shields.io/coverallsCoverage/github/VitaminVague/localrocks?branch=master
