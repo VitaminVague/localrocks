@@ -1,7 +1,7 @@
 # localrocks
 
-[![Latest release][release-badge]][release-url]
-[![LuaRocks status][luarocks-badge]][luarocks-url]
+[![Latest release][github-badge]][github-url]
+[![LuaRocks release][luarocks-badge]][luarocks-url]
 [![Lua Lint status][lua-lint-badge]][lua-lint-url]
 [![Shell Lint status][shell-lint-badge]][shell-lint-url]
 [![CI status][ci-badge]][ci-url]
@@ -136,15 +136,15 @@ Distributed under the [MIT license](LICENSE).
 
 - [Using LuaRocks to install packages in the current directory](https://leafo.net/guides/customizing-the-luarocks-tree.html)
 
-[release-badge]: https://img.shields.io/github/v/release/VitaminVague/localrocks
-[release-url]: https://github.com/VitaminVague/localrocks/releases/latest
-[luarocks-badge]: https://img.shields.io/luarocks/v/vitaminvague/localrocks
+[github-badge]: https://img.shields.io/github/v/release/VitaminVague/localrocks?label=GitHub
+[github-url]: https://github.com/VitaminVague/localrocks/releases/latest
+[luarocks-badge]: https://img.shields.io/luarocks/v/vitaminvague/localrocks?label=LuaRocks
 [luarocks-url]: https://luarocks.org/modules/vitaminvague/localrocks
-[lua-lint-badge]: https://img.shields.io/github/actions/workflow/status/VitaminVague/localrocks/lua-lint.yml?branch=master&label=lua+lint
+[lua-lint-badge]: https://img.shields.io/github/actions/workflow/status/VitaminVague/localrocks/lua-lint.yml?branch=master&label=Lua+Lint
 [lua-lint-url]: https://github.com/VitaminVague/localrocks/actions/workflows/lua-lint.yml
-[shell-lint-badge]: https://img.shields.io/github/actions/workflow/status/VitaminVague/localrocks/shell-lint.yml?branch=master&label=shell+lint
+[shell-lint-badge]: https://img.shields.io/github/actions/workflow/status/VitaminVague/localrocks/shell-lint.yml?branch=master&label=Shell+Lint
 [shell-lint-url]: https://github.com/VitaminVague/localrocks/actions/workflows/shell-lint.yml
-[ci-badge]: https://img.shields.io/github/actions/workflow/status/VitaminVague/localrocks/ci.yml?branch=master&label=ci
+[ci-badge]: https://img.shields.io/github/actions/workflow/status/VitaminVague/localrocks/ci.yml?branch=master&label=CI
 [ci-url]: https://github.com/VitaminVague/localrocks/actions/workflows/ci.yml
-[coveralls-badge]: https://img.shields.io/coverallsCoverage/github/VitaminVague/localrocks?branch=master
+[coveralls-badge]: https://img.shields.io/coverallsCoverage/github/VitaminVague/localrocks?branch=master&label=Coverage
 [coveralls-url]: https://coveralls.io/github/VitaminVague/localrocks?branch=master
