@@ -47,7 +47,6 @@
       "label": "Lint: shfmt",
       "type": "shell",
       "command": "shfmt -d .",
-      "problemMatcher": "$gcc",
       "group": "test"
     },
     {
