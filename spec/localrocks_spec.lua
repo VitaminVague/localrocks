@@ -4,8 +4,8 @@ local run_localrocks = utils.run_localrocks
 local expected_lua_path = utils.expected_lua_path
 local expected_binary_path = utils.expected_binary_path
 
-describe("localrocks.lua", function ()
-    it("prepends lua_modules paths", function ()
+describe("localrocks.lua", function()
+    it("prepends lua_modules paths", function()
         local lua_path = expected_lua_path()
         local binary_path = expected_binary_path()
         local path, cpath = run_localrocks(make_env())
@@ -23,7 +23,7 @@ describe("localrocks.lua", function ()
         )
     end)
 
-    it("does not prepend lua_modules paths more than once", function ()
+    it("does not prepend lua_modules paths more than once", function()
         local lua_path = expected_lua_path()
         local binary_path = expected_binary_path()
         local path, cpath = run_localrocks(make_env())
@@ -41,7 +41,7 @@ describe("localrocks.lua", function ()
         ---@diagnostic enable: redundant-parameter
     end)
 
-    it("preserves the original paths suffixed", function ()
+    it("preserves the original paths suffixed", function()
         local env = make_env()
         local orig_path, orig_cpath = env.package.path, env.package.cpath
         local path, cpath = run_localrocks(env)
@@ -59,7 +59,7 @@ describe("localrocks.lua", function ()
         )
     end)
 
-    it("is idempotent when applied twice", function ()
+    it("is idempotent when applied twice", function()
         local env = make_env()
         local p1, c1 = run_localrocks(env)
         local p2, c2 = run_localrocks(env)
@@ -68,7 +68,7 @@ describe("localrocks.lua", function ()
         assert.equal(c1, c2, "package.cpath should not change")
     end)
 
-    it("uses the Lua version when constructing paths", function ()
+    it("uses the Lua version when constructing paths", function()
         local lua_path = expected_lua_path { version = "0.0" }
         local binary_path = expected_binary_path { version = "0.0" }
         local path, cpath = run_localrocks(make_env { version = "Lua 0.0" })
@@ -86,10 +86,10 @@ describe("localrocks.lua", function ()
         )
     end)
 
-    it("uses the path separator when constructing paths", function ()
+    it("uses the path separator when constructing paths", function()
         local lua_path = expected_lua_path { path_sep = "@" }
         local binary_path = expected_binary_path { path_sep = "@" }
-        local path, cpath = run_localrocks(make_env { path_sep = "@" } )
+        local path, cpath = run_localrocks(make_env { path_sep = "@" })
 
         assert.equal(
             lua_path,
@@ -104,7 +104,7 @@ describe("localrocks.lua", function ()
         )
     end)
 
-    it("uses the substitution character when constructing paths", function ()
+    it("uses the substitution character when constructing paths", function()
         local lua_path = expected_lua_path { sub_chr = "@" }
         local binary_path = expected_binary_path { sub_chr = "@" }
         local path, cpath = run_localrocks(make_env { sub_chr = "@" })
@@ -122,8 +122,8 @@ describe("localrocks.lua", function ()
         )
     end)
 
-    it("uses the .so extension on Unix systems", function ()
-        local binary_path = expected_binary_path { ext = "so" }
+    it("uses the .so extension on Unix systems", function()
+        local binary_path = expected_binary_path { lib_ext = "so" }
         local _, cpath = run_localrocks(make_env { dir_sep = "/" })
 
         assert.equal(
@@ -133,8 +133,8 @@ describe("localrocks.lua", function ()
         )
     end)
 
-    it("uses the .dll extension on Windows systems", function ()
-        local binary_path = expected_binary_path { ext = "dll" }
+    it("uses the .dll extension on Windows systems", function()
+        local binary_path = expected_binary_path { lib_ext = "dll" }
         local _, cpath = run_localrocks(make_env { dir_sep = "\\" })
 
         assert.equal(

@@ -35,14 +35,14 @@ function utils.make_env(opts)
 
     -- Rebuild config
     local lines = {}
-    for line in pkg.config:gmatch("([^\n]*)\n") do
+    for line in pkg.config:gmatch "([^\n]*)\n" do
         table.insert(lines, line)
     end
 
     -- Use predictable defaults
-    lines[1] = opts.dir_sep  or "/"
+    lines[1] = opts.dir_sep or "/"
     lines[2] = opts.path_sep or ";"
-    lines[3] = opts.sub_chr  or "?"
+    lines[3] = opts.sub_chr or "?"
 
     pkg.config = table.concat(lines, "\n") .. "\n"
 
@@ -66,7 +66,7 @@ function utils.run_localrocks(env)
 
     local chunk
     if setfenv then -- Lua 5.1
-        chunk = assert(loadfile("src/localrocks.lua"))
+        chunk = assert(loadfile "src/localrocks.lua")
         setfenv(chunk, env)
     else
         ---@diagnostic disable-next-line: redundant-parameter
@@ -82,7 +82,7 @@ end
 
 ---@return string
 local function current_version()
-    return _VERSION:match("%d+%.%d+")
+    return _VERSION:match "%d+%.%d+"
 end
 
 ---@class test.utils.lua_path_opts
@@ -103,24 +103,18 @@ end
 function utils.expected_lua_path(opts)
     opts = opts or {}
 
-    local version  = opts.version  or current_version()
-    local path_sep = opts.path_sep or ";"
-    local sub_chr  = opts.sub_chr  or "?"
+    local v = opts.version or current_version()
+    local sep = opts.path_sep or ";"
+    local sub = opts.sub_chr or "?"
 
-    local fmt =
-        "lua_modules/share/lua/%s/%s.lua%s" ..
-        "lua_modules/share/lua/%s/%s/init.lua%s"
-
-    return fmt:format(
-        version, sub_chr, path_sep,
-        version, sub_chr, path_sep
-    )
+    local base = "lua_modules/share/lua/" .. v .. "/" .. sub
+    return base .. ".lua" .. sep .. base .. "/init.lua" .. sep
 end
 
 ---@class test.utils.binary_path_opts: test.utils.lua_path_opts
 --
 -- Shared library extension without dot
----@field ext? string
+---@field lib_ext? string
 
 -- Compute the expected prefix of `package.cpath` for lua_modules.
 --
@@ -129,13 +123,12 @@ end
 function utils.expected_binary_path(opts)
     opts = opts or {}
 
-    local version  = opts.version  or current_version()
-    local path_sep = opts.path_sep or ";"
-    local sub_chr  = opts.sub_chr  or "?"
-    local ext      = opts.ext      or "so"
+    local v = opts.version or current_version()
+    local sep = opts.path_sep or ";"
+    local sub = opts.sub_chr or "?"
+    local ext = opts.lib_ext or "so"
 
-    local fmt = "lua_modules/lib/lua/%s/%s.%s%s"
-    return fmt:format(version, sub_chr, ext, path_sep)
+    return "lua_modules/lib/lua/" .. v .. "/" .. sub .. "." .. ext .. sep
 end
 
 return utils

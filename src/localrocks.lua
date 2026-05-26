@@ -2,26 +2,21 @@
 -- Usage: lua -l localrocks script.lua
 --        busted --helper=localrocks
 
-local version = _VERSION:match("%d+%.%d+")
-local shared_lib_ext = (package.config:sub(1, 1) == "\\") and "dll" or "so"
-local path_sep = package.config:sub(3, 3)
-local sub_chr = package.config:sub(5, 5)
+local t = "lua_modules"
+local v = _VERSION:match "%d+%.%d+"
+local lib_ext = (package.config:sub(1, 1) == "\\") and "dll" or "so"
+local sep = package.config:sub(3, 3)
+local sub = package.config:sub(5, 5)
 
-local tree = "lua_modules"
-local lua_dir = tree .. "/share/lua/" .. version
-local binary_dir = tree .. "/lib/lua/" .. version
+local lua_base = t .. "/share/lua/" .. v .. "/" .. sub
+local lua_path = lua_base .. ".lua" .. sep .. lua_base .. "/init.lua" .. sep
 
-local lua_path =
-    lua_dir .. "/" .. sub_chr .. ".lua" .. path_sep ..
-    lua_dir .. "/" .. sub_chr .. "/init.lua" .. path_sep
-
-local binary_path =
-    binary_dir .. "/" .. sub_chr .. "." .. shared_lib_ext .. path_sep
+local bin_path = t .. "/lib/lua/" .. v .. "/" .. sub .. "." .. lib_ext .. sep
 
 if package.path:sub(1, #lua_path) ~= lua_path then
     package.path = lua_path .. package.path
 end
 
-if package.cpath:sub(1, #binary_path) ~= binary_path then
-    package.cpath = binary_path .. package.cpath
+if package.cpath:sub(1, #bin_path) ~= bin_path then
+    package.cpath = bin_path .. package.cpath
 end
