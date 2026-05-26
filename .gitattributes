@@ -17,6 +17,7 @@
 .editorconfig   export-ignore
 .luacheckrc     export-ignore
 .luarc.json     export-ignore
+.stylua.toml    export-ignore
 .vscode/        export-ignore
 
 # CI & release scripts
